@@ -75,6 +75,15 @@ struct movie *processFile(char *filePath){
 }
 
 // Frees every movie in the list (freeList).
+void freeList(struct movie *list){
+    struct movie *next;
+    while (list != NULL){
+        next = list->next;
+        free(list->title);
+        free(list);
+        list = next;
+    }
+}
 
 
 // Finds largest or smallest (findFile).
