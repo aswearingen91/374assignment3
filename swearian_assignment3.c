@@ -85,11 +85,15 @@ void freeList(struct movie *list){
     }
 }
 
-
 // Finds largest or smallest (findFile).
 
 
+
 // Checks if file exists (fileExists).
+int fileExists(char *fileName){
+    struct stat fileStat;
+    return stat(fileName, &fileStat) == 0;
+}
 
 
 // Creates new directory, writes one YYYY.txt file per year (processChosenFile).
