@@ -86,7 +86,39 @@ void freeList(struct movie *list){
 }
 
 // Finds largest or smallest (findFile).
+int findFile(int findLargest, char *result){
+    DIR *currDir = opendir(".");
+    struct dirent *entry;
+    struct stat fileStat;
+    size_t nameLen, extLen = strlen(EXTENSION);
+    int found = 0;
+    off_t bestSize = 0;
 
+    if (currDir == NULL){
+        return 0;
+    }
+
+    while ((entry = readdir(currDir)) != NULL){
+        nameLen = strlen(entry->d_name);
+
+        if (strncmp(entry->d_name, PREFIX, strlen(PREFIX)) != 0){
+            continue;
+        }
+        if (nameLen < extLen || strcmp(entry->d_name + nameLen - extLen, EXTENSION) != 0){
+            continue;
+        }
+        if (stat(entry->d_name, &fileStat) != 0 || !S_ISREG(fileStat.st_mode)){
+            continue;
+        }
+        if (!found || (findLargest && fileStat.st_size > bestSize) || (!findLargest && fileStat.st_size < bestSize)){
+            bestSize = fileStat.st_size;
+            strcpy(result, entry->d_name);
+            found = 1;
+        }
+    }
+    closedir(currDir);
+    return found;
+}
 
 
 // Checks if file exists (fileExists).
