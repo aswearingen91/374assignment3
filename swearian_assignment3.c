@@ -4,7 +4,6 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <time.h>
-#include <errno.h>
 
 #define ONID "swearian"
 #define PREFIX "movies_"
@@ -129,6 +128,37 @@ int fileExists(char *fileName){
 
 
 // Creates new directory, writes one YYYY.txt file per year (processChosenFile).
+void processChosenFile(char *fileName){
+    char dirName[64], filePath[320];
+    struct movie *list, *curr;
+    FILE *yearFile;
+
+    printf("Now processing the chosen file named %s\n", fileName);
+
+    do{
+        sprintf(dirName, "%s.movies.%ld", ONID, random() % 100000);
+    } while (fileExists(dirName));
+    
+    mkdir(dirName, 0750);
+    chmod(dirName, 0750);
+
+    printf("Created directory with name %s\n", dirName);
+
+    list = processFile(fileName);
+
+    curr = list;
+    while (curr != NULL){
+        sprintf(filePath, "%s/%d.txt", dirName, curr->year);
+        yearFile = fopen(filePath, "a");
+        if (yearFile != NULL){
+            fprintf(yearFile, "%s\n", curr->title);
+            fclose(yearFile);
+            chmod(filePath, 0640);
+        }
+        curr = curr->next;
+    }
+    freeList(list);
+}
 
 
 // File picker menu (pickFile).
