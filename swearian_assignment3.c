@@ -162,6 +162,47 @@ void processChosenFile(char *fileName){
 
 
 // File picker menu (pickFile).
+void pickFile(void){
+    char fileName[256];
+    int choice, picked = 0;
+
+    while (!picked){
+        printf("\nWhich file you want to process?\n");
+        printf("Enter 1 to pick the largest file\n");
+        printf("Enter 2 to pick the smallest file\n");
+        printf("Enter 3 to specify the name of a file\n\n");
+        printf("Enter a choice from 1 to 3: ");
+        scanf("%d", &choice);
+
+        switch (choice){
+            case 1:
+                if (findFile(1, fileName)){
+                    processChosenFile(fileName);
+                    picked = 1;
+                }
+                break;
+            case 2:
+                if (findFile(0, fileName)){
+                    processChosenFile(fileName);
+                    picked = 1;
+                }
+                break;
+            case 3:
+                printf("Enter the complete file name: ");
+                scanf("%255s", fileName);
+                if (fileExists(fileName)){
+                    processChosenFile(fileName);
+                    picked = 1;
+                }
+                else{
+                    printf("The file %s was not found. Try again\n", fileName);
+                }
+                break;
+            default:
+                printf("You entered an incorrect choice. Try again.\n");
+        }
+    }
+}
 
 
 // Main menu loop.
